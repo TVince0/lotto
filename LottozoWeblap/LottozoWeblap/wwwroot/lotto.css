@@ -1,0 +1,16 @@
+﻿.tablazat {
+    display: flex;
+    align-content: flex-start;
+}
+
+.gomb {
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+}
+
+.oszlop {
+    padding-right: 12rem;
+}

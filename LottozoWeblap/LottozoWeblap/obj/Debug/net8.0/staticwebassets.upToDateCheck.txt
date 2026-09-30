@@ -1,0 +1,3 @@
+wwwroot\lotto.html
+wwwroot\lotto.js
+wwwroot\lotto.css
