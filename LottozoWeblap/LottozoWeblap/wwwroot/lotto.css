@@ -11,7 +11,7 @@
 }
 
 .oszlop {
-    padding-right: 12rem;
+    flex: 0 1 30%;
 }
 
 .rejtett {
@@ -22,7 +22,7 @@ textarea {
     white-space: pre-line;
     overflow: hidden;
     resize: none;
-    box-sizing: border-box;
+    width: 180px;
     font-family: inherit;
     font-size: inherit;
     line-height: 1.5;

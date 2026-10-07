@@ -1,56 +1,101 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 
 namespace LottozoWeblap.Controllers
 {
     static class Filekezelo
     {
-        public static List<List<string>> Olvasas()
+        const string cns = "server=localhost;port=3306;uid=root;database=lotto";
+
+        public static List<string> Olvasas(Tipus tipus)
         {
-            int index = 0;
-            List<List<string>> szamok = [[], [], []];
+            MySqlConnection db = new(cns);
+            db.Open();
 
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "szamok.txt");
-            if (Path.Exists(path))
+            int darab = tipus switch
             {
-                string[] sorok = System.IO.File.ReadAllLines(path);
+                Tipus.Otos => 5,
+                Tipus.Hatos => 6,
+                Tipus.Skandinav => 7,
+                _ => throw new NotImplementedException(),
+            };
 
-                foreach (string sor in sorok)
+            MySqlCommand cmd = db.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM `{tipus.ToString().ToLower()}`";
+
+            List<string> szamok = [];
+
+            MySqlDataReader dbolv = cmd.ExecuteReader();
+            try
+            {
+                while (dbolv.Read())
                 {
-                    if (string.IsNullOrWhiteSpace(sor))
+                    List<int> lekertSzamok = [];
+                    for (int i = 0; i < darab; i++)
                     {
-                        index++;
-                        continue;
+                        lekertSzamok.Add(dbolv.GetInt32(i));
                     }
-
-                    szamok[index].Add(sor);
+                    szamok.Add(string.Join(", ", lekertSzamok));
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            finally
+            {
+                dbolv.Close();
+                db.Close();
             }
 
             return szamok;
         }
 
-        public static void Iras(int index, string szamok)
+        public static List<List<string>> MindentOlvasas()
         {
-            List<List<string>> EddigiSzamok = Olvasas();
-            EddigiSzamok[index].Add(szamok);
+            List<List<string>> szamok = [];
 
-            int elozoI = 0;
-
-            StreamWriter sw = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "szamok.txt"));
-            for (int i = 0; i < EddigiSzamok.Count; i++)
+            for (int i = 0; i < 3; i++)
             {
-                if (elozoI != i)
-                {
-                    elozoI = i;
-                    sw.WriteLine();
-                }
-
-                for (int j = 0; j < EddigiSzamok[i].Count; j++)
-                {
-                    sw.WriteLine(EddigiSzamok[i][j]);
-                }
+                szamok.Add(Olvasas((Tipus)i));
             }
-            sw.Close();
+
+            return szamok;
+        }
+
+        public static void Iras(Tipus tipus, int[] szamok)
+        {
+            MySqlConnection db = new(cns);
+            db.Open();
+
+            int darab = tipus switch
+            {
+                Tipus.Otos => 5,
+                Tipus.Hatos => 6,
+                Tipus.Skandinav => 7,
+                _ => throw new NotImplementedException(),
+            };
+
+            MySqlCommand cmd = db.CreateCommand();
+            cmd.CommandText = $"INSERT INTO `{tipus.ToString().ToLower()}` ({Formattalas('`', [.. Enumerable.Range(0, darab)])}) VALUES ({Formattalas('\'', szamok)});";
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            finally
+            {
+                db.Close();
+            }
+        }
+
+        static string Formattalas(char karakter, int[] szamok)
+        {
+            return string.Join(", ", szamok.Select(szam => $"{szam}"));
         }
     }
 
@@ -63,7 +108,7 @@ namespace LottozoWeblap.Controllers
         {
             if (!tipus.HasValue)
             {
-                return Ok(Filekezelo.Olvasas());
+                return Ok(Filekezelo.MindentOlvasas());
             }
 
             (int mennyit, int meddig) = tipus switch
@@ -81,15 +126,15 @@ namespace LottozoWeblap.Controllers
                     szamok.Add(generalt);
             }
             szamok = [.. szamok.Order()];
-            Filekezelo.Iras((int)tipus, string.Join(", ", szamok));
+            Filekezelo.Iras(tipus.Value, [.. szamok]);
             return Ok(szamok);
         }
 
-        public enum Tipus
-        {
-            Otos,
-            Hatos,
-            Skandinav
-        }
+    }
+    public enum Tipus
+    {
+        Otos,
+        Hatos,
+        Skandinav
     }
 }
