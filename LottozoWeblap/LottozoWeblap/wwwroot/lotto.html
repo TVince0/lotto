@@ -12,20 +12,32 @@
         <div class="oszlop">
             <h1>ÖTÖS (5/90)</h1>
             <h3 class="gomb" onclick="sorsolas(0)">SORSOLÁS</h3>
-            <h3>A kisorsolt számok:</h3>
-            <h4 id=0></h4>
+            <h3 style="font-weight: normal">A kisorsolt számok:</h3>
+            <h4 id=0 style="font-weight: normal"></h4>
         </div>
         <div class="oszlop">
             <h1>HATOS (6/45)</h1>
             <h3 class="gomb" onclick="sorsolas(1)">SORSOLÁS</h3>
-            <h3>A kisorsolt számok:</h3>
-            <h4 id=1></h4>
+            <h3 style="font-weight: normal">A kisorsolt számok:</h3>
+            <h4 id=1 style="font-weight: normal"></h4>
         </div>
         <div class="oszlop">
             <h1>SKANDINÁV (7/35)</h1>
             <h3 class="gomb" onclick="sorsolas(2)">SORSOLÁS</h3>
-            <h3>A kisorsolt számok:</h3>
-            <h4 id=2></h4>
+            <h3 style="font-weight: normal">A kisorsolt számok:</h3>
+            <h4 id=2 style="font-weight: normal"></h4>
+        </div>
+    </div>
+    <h3 class="gomb" onclick="lekeres()">KORÁBBI SORSOLÁSOK LEKÉRÉSE</h3>
+    <div class="tablazat">
+        <div class="oszlop">
+            <textarea id="szoveg0" type="text" class="rejtett" readonly></textarea>
+        </div>
+        <div class="oszlop">
+            <textarea id="szoveg1" type="text" class="rejtett" readonly></textarea>
+        </div>
+        <div class="oszlop">
+            <textarea id="szoveg2" type="text" class="rejtett" readonly></textarea>
         </div>
     </div>
 </body>

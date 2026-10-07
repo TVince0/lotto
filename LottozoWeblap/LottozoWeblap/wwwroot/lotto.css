@@ -6,11 +6,24 @@
 .gomb {
     user-select: none;
     -moz-user-select: none;
-    -khtml-user-select: none;
     -webkit-user-select: none;
-    -o-user-select: none;
+    cursor: pointer;
 }
 
 .oszlop {
     padding-right: 12rem;
+}
+
+.rejtett {
+    opacity: 0;
+}
+
+textarea {
+    white-space: pre-line;
+    overflow: hidden;
+    resize: none;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1.5;
 }
