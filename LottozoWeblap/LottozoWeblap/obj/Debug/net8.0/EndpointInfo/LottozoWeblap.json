@@ -6,29 +6,19 @@
   },
   "paths": {
     "/lotto": {
-      "post": {
+      "get": {
         "tags": [
           "Lotto"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Tipus"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Tipus"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Tipus"
-              }
+        "parameters": [
+          {
+            "name": "tipus",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Tipus"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "OK",

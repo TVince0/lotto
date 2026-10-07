@@ -2,13 +2,9 @@
 
 namespace LottozoWeblap.Controllers
 {
-    [ApiController]
-    [Route("/lotto")]
-    public class LottoController : Controller
+    static class Filekezelo
     {
-        private readonly List<List<string>> EddigiSzamok = Olvasas();
-
-        private static List<List<string>> Olvasas()
+        public static List<List<string>> Olvasas()
         {
             int index = 0;
             List<List<string>> szamok = [[], [], []];
@@ -17,7 +13,7 @@ namespace LottozoWeblap.Controllers
             if (Path.Exists(path))
             {
                 string[] sorok = System.IO.File.ReadAllLines(path);
-                
+
                 foreach (string sor in sorok)
                 {
                     if (string.IsNullOrWhiteSpace(sor))
@@ -29,16 +25,17 @@ namespace LottozoWeblap.Controllers
                     szamok[index].Add(sor);
                 }
             }
-            
+
             return szamok;
         }
 
-        private void Iras(int index, string szamok)
+        public static void Iras(int index, string szamok)
         {
+            List<List<string>> EddigiSzamok = Olvasas();
             EddigiSzamok[index].Add(szamok);
-            
+
             int elozoI = 0;
-            
+
             StreamWriter sw = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "szamok.txt"));
             for (int i = 0; i < EddigiSzamok.Count; i++)
             {
@@ -55,16 +52,20 @@ namespace LottozoWeblap.Controllers
             }
             sw.Close();
         }
-        
+    }
+
+    [ApiController]
+    [Route("/lotto")]
+    public class LottoController : Controller
+    {
         [HttpGet]
-        public ActionResult<string[][]> Get()
+        public ActionResult<int[]> Get([FromQuery] Tipus? tipus)
         {
-            return Ok(EddigiSzamok);
-        }
-        
-        [HttpPost]
-        public ActionResult<int[]> Post([FromBody] Tipus tipus)
-        {
+            if (!tipus.HasValue)
+            {
+                return Ok(Filekezelo.Olvasas());
+            }
+
             (int mennyit, int meddig) = tipus switch
             {
                 Tipus.Otos => (5, 90),
@@ -80,7 +81,7 @@ namespace LottozoWeblap.Controllers
                     szamok.Add(generalt);
             }
             szamok = [.. szamok.Order()];
-            Iras((int)tipus, string.Join(", ", szamok));
+            Filekezelo.Iras((int)tipus, string.Join(", ", szamok));
             return Ok(szamok);
         }
 
@@ -90,6 +91,5 @@ namespace LottozoWeblap.Controllers
             Hatos,
             Skandinav
         }
-
     }
 }

@@ -1,16 +1,16 @@
 [
   {
-    "ContainingType": "Lottozo.Controllers.LottoController",
-    "Method": "Post",
+    "ContainingType": "LottozoWeblap.Controllers.LottoController",
+    "Method": "Get",
     "RelativePath": "lotto",
-    "HttpMethod": "POST",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "tipus",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [

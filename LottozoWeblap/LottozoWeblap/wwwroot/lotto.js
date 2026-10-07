@@ -1,10 +1,6 @@
 ﻿function sorsolas(tipus) {
-    fetch("http://localhost:5297/lotto", {
-        method: "POST",
-        body: JSON.stringify(tipus),
-        headers: {
-            "Content-type": "application/json; charset=UTF-8"
-        }
+    fetch("http://localhost:5297/lotto/?tipus=" + tipus, {
+        method: "GET",
     })
         .then((valasz) => valasz.json())
         .then((adatok) => {
@@ -19,7 +15,7 @@ function lekeres() {
         .then((valasz) => valasz.json())
         .then((adatok) => {
             for (let i = 0; i < 3; i++) {
-                if (adatok[i] !== null) {
+                if (adatok[i].length > 0) {
                     const szoveg = document.getElementById("szoveg" + i);
 
                     szoveg.textContent = adatok[i].join("\n");
